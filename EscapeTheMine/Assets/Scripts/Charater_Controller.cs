@@ -6,14 +6,18 @@ namespace Assets.Scripts
     public class Charater_Controller : MonoBehaviour
     {
 
+        public int minerHealth = 10;
         public int walkSpeed = 2;
         public int rotationSensitivityX = 40;
         public int rotationSensitivityY = 80;
         public int jumpHeight = 15;
         public Text staminaCounterTextField;
         public Text collectedStonesCounterTextField;
+        public Text pickUpStoneText;
+        public int maxStamina = 100;
         public int stamina = 100;
         public int collectedStones = 0;
+        public int throwForce = 700;
 
         private int enhancedWalkSpeed;
         private Gravity_Controller gravityController;
@@ -29,7 +33,7 @@ namespace Assets.Scripts
         void Start()
         {
             enhancedWalkSpeed = walkSpeed;
-            gravityController = new Gravity_Controller(this.gameObject);
+            gravityController = new Gravity_Controller(this.gameObject, new Vector3(0, 0.3f, 0), 0.5f);
             firstPersonCamera = this.gameObject.GetComponentInChildren<Camera_Controller>();
 
             staminaCounterTextField.text = stamina.ToString();
@@ -42,9 +46,7 @@ namespace Assets.Scripts
             gravityController.doPhysics();
             moveCharacter();
             moveCamera();
-
-            checkForCollisionWithWalls();
-
+            
             if (Input.GetMouseButtonDown(0))
             {
                 throwStone();
@@ -53,48 +55,27 @@ namespace Assets.Scripts
             updateGUI();
 
         }
+        
 
         private void updateGUI()
         {
             this.staminaCounterTextField.text = stamina + " %";
             this.collectedStonesCounterTextField.text = collectedStones.ToString();
         }
-        
+
 
         private void throwStone()
         {
             if (collectedStones > 0)
             {
                 collectedStones--;
+                GameObject throwedStone = (GameObject)Instantiate(Resources.Load("Stone"), new Vector3(this.transform.localPosition.x, this.transform.position.y + 2.5f, this.transform.position.z), this.transform.rotation);
+                throwedStone.name = "Stone";
+                throwedStone.GetComponent<Rigidbody>().AddForce(firstPersonCamera.transform.forward * throwForce);
             }
         }
 
-        private void checkForCollisionWithWalls()
-        {
-            Vector3 resetPosition = this.transform.position;
-            float resetDistanceFromWall = raycastOffsetXorZ + raycastLength;
-
-            if (Physics.Raycast(this.transform.position + new Vector3(raycastOffsetXorZ * -1, raycastOffsetY, 0), Vector3.left, out raycastHitted, raycastLength))
-            {
-                resetPosition.x = raycastHitted.point.x + resetDistanceFromWall;
-            }
-            if (Physics.Raycast(this.transform.position + new Vector3(0, raycastOffsetY, raycastOffsetXorZ), Vector3.forward, out raycastHitted, raycastLength))
-            {
-                resetPosition.z = raycastHitted.point.z - resetDistanceFromWall;
-            }
-            if (Physics.Raycast(this.transform.position + new Vector3(raycastOffsetXorZ, raycastOffsetY, 0), Vector3.right, out raycastHitted, raycastLength))
-            {
-                resetPosition.x = raycastHitted.point.x - resetDistanceFromWall;
-            }
-            if (Physics.Raycast(this.transform.position + new Vector3(0, raycastOffsetY, raycastOffsetXorZ * -1), Vector3.back, out raycastHitted, raycastLength))
-            {
-                resetPosition.z = raycastHitted.point.z + resetDistanceFromWall;
-            }
-
-            this.transform.position = resetPosition;
-        }
-
-
+        
         private void moveCamera()
         {
             firstPersonCamera.tiltCamera(this.rotationSensitivityY);
@@ -104,20 +85,20 @@ namespace Assets.Scripts
         {
             if (Input.GetKey(KeyCode.LeftShift) && Input.GetKey(KeyCode.W))
             {
-               if (stamina > 0)
+                if (stamina > 0)
                 {
                     stamina--;
                     enhancedWalkSpeed = walkSpeed * 2;
                 }
-               else
-               {
-                   enhancedWalkSpeed = walkSpeed;
-               }
+                else
+                {
+                    enhancedWalkSpeed = walkSpeed;
+                }
             }
             else
             {
                 enhancedWalkSpeed = walkSpeed;
-                if (stamina < 100)
+                if (stamina < maxStamina)
                 {
                     stamina++;
                 }
@@ -133,6 +114,31 @@ namespace Assets.Scripts
             this.transform.Translate(Vector3.right * Input.GetAxis("Horizontal") * Time.deltaTime * walkSpeed, Space.Self);
 
             this.transform.Rotate(Vector3.up * Input.GetAxis("Mouse X") * Time.deltaTime * rotationSensitivityX, Space.World);
+        }
+
+        public void pickUpRaycastHitted(RaycastHit raycastHit)
+        {
+            pickUpStoneText.enabled = true;
+
+            if (Input.GetKeyDown(KeyCode.E))
+            {
+                collectedStones++;
+                Destroy(raycastHit.transform.gameObject);
+            }
+        }
+
+        public void disablePickUpText()
+        {
+            pickUpStoneText.enabled = false;
+        }
+
+        public void applyDamateToMiner()
+        {
+            minerHealth--;
+            if (minerHealth <= 0)
+            {
+                Debug.Log("Miner died");
+            }
         }
     }
 }

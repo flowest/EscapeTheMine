@@ -7,14 +7,32 @@ namespace Assets.Scripts
 
         private float rotationX = 0;
 
+        private RaycastHit raycastPickUp;
+
         public void tiltCamera(int rotationSensitivity)
         {
-            //this.transform.Rotate(Vector3.right * -Input.GetAxis("Mouse Y") * Time.deltaTime * rotationSensitivity, Space.Self);
-
             rotationX += Input.GetAxis("Mouse Y") * rotationSensitivity * Time.deltaTime;
-            rotationX = Mathf.Clamp(rotationX, -50, 60);
+            rotationX = Mathf.Clamp(rotationX, -70, 60);
 
             transform.localEulerAngles = new Vector3(-rotationX, transform.localEulerAngles.y, transform.localEulerAngles.z);
+
+            sendPickUpRaycast();
+        }
+
+        private void sendPickUpRaycast()
+        {
+
+            if (Physics.Raycast(this.transform.position, transform.forward, out raycastPickUp, 2))
+            {
+                if (raycastPickUp.transform.name == "Stone")
+                {
+                    SendMessageUpwards("pickUpRaycastHitted", raycastPickUp);
+                }
+            }
+            else
+            {
+                SendMessageUpwards("disablePickUpText");
+            }
         }
     }
 }

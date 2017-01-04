@@ -9,12 +9,16 @@ namespace Assets.Scripts
         public int deltaY = 1;
 
         private readonly GameObject objectToDoPhysicsOn;
+        private readonly Vector3 offsetVector;
+        private readonly float raycastLength;
         private bool isOnGround = false;
         private RaycastHit raycastHit;
 
-        public Gravity_Controller(GameObject physicsObject)
+        public Gravity_Controller(GameObject physicsObject, Vector3 offsetVector, float raycastLength)
         {
             this.objectToDoPhysicsOn = physicsObject;
+            this.offsetVector = offsetVector;
+            this.raycastLength = raycastLength;
         }
 
         public void doPhysics()
@@ -25,7 +29,7 @@ namespace Assets.Scripts
                 objectToDoPhysicsOn.transform.Translate(Vector3.down * Time.deltaTime * deltaY, Space.World);
             }
 
-            if (Physics.Raycast(objectToDoPhysicsOn.transform.position + new Vector3(0, 0.3f, 0), Vector3.down, out raycastHit, 0.5f))
+            if (Physics.Raycast(objectToDoPhysicsOn.transform.position + offsetVector, Vector3.down, out raycastHit, raycastLength))
             {
                 objectToDoPhysicsOn.transform.position = raycastHit.point;
                 isOnGround = true;
