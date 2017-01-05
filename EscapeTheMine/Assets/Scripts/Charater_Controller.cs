@@ -23,10 +23,10 @@ namespace Assets.Scripts
         private Gravity_Controller gravityController;
         private Camera_Controller firstPersonCamera;
 
-        private float raycastLength = 0.25f;
-        private float raycastOffsetXorZ = 0.6f;
-        private float raycastOffsetY = 0.2f;
-        private RaycastHit raycastHitted;
+        //private float raycastLength = 0.25f;
+        //private float raycastOffsetXorZ = 0.6f;
+        //private float raycastOffsetY = 0.2f;
+        //private RaycastHit raycastHitted;
 
 
         // Use this for initialization

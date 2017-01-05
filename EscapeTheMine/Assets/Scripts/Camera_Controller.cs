@@ -5,9 +5,36 @@ namespace Assets.Scripts
     public class Camera_Controller : MonoBehaviour
     {
 
-        private float rotationX = 0;
+        private float timer = 2f;
 
+        private float rotationX = 0;
         private RaycastHit raycastPickUp;
+
+        private Light flashLight;
+
+        void Start()
+        {
+            flashLight = this.transform.GetComponentInChildren<Light>();
+        }
+
+        void Update()
+        {
+
+            timer -= Time.deltaTime;
+
+            if (timer < 0)
+            {
+                if (flashLight.enabled == true)
+                {
+                    flashLight.enabled = false;
+                }
+                else if (flashLight.enabled == false)
+                {
+                    flashLight.enabled = true;
+                }
+                timer = Random.value / 3;
+            }
+        }
 
         public void tiltCamera(int rotationSensitivity)
         {
