@@ -20,20 +20,20 @@ namespace Assets.Scripts
         void Update()
         {
 
-            timer -= Time.deltaTime;
+            //timer -= Time.deltaTime;
 
-            if (timer < 0)
-            {
-                if (flashLight.enabled == true)
-                {
-                    flashLight.enabled = false;
-                }
-                else if (flashLight.enabled == false)
-                {
-                    flashLight.enabled = true;
-                }
-                timer = Random.value / 3;
-            }
+            //if (timer < 0)
+            //{
+            //    if (flashLight.enabled == true)
+            //    {
+            //        flashLight.enabled = false;
+            //    }
+            //    else if (flashLight.enabled == false)
+            //    {
+            //        flashLight.enabled = true;
+            //    }
+            //    timer = Random.value / 3;
+            //}
         }
 
         public void tiltCamera(int rotationSensitivity)

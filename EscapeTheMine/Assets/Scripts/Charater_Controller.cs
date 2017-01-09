@@ -6,38 +6,35 @@ namespace Assets.Scripts
     public class Charater_Controller : MonoBehaviour
     {
 
-        public int minerHealth = 10;
-        public int walkSpeed = 2;
-        public int rotationSensitivityX = 40;
-        public int rotationSensitivityY = 80;
-        public int jumpHeight = 15;
+        public int minerHealth;
+        private int walkSpeed;
+        private int rotationSensitivityX = 70;
+        private int rotationSensitivityY = 80;
+        private int jumpHeight = 15;
         public Text staminaCounterTextField;
         public Text collectedStonesCounterTextField;
         public Text pickUpStoneText;
-        public int maxStamina = 100;
-        public int stamina = 100;
+        public Text healthCounterText;
+        private int maxStamina;
+        private int currentStamina;
         public int collectedStones = 0;
-        public int throwForce = 700;
+        public int throwForce;
 
         private int enhancedWalkSpeed;
         private Gravity_Controller gravityController;
         private Camera_Controller firstPersonCamera;
-
-        //private float raycastLength = 0.25f;
-        //private float raycastOffsetXorZ = 0.6f;
-        //private float raycastOffsetY = 0.2f;
-        //private RaycastHit raycastHitted;
-
-
+        
         // Use this for initialization
         void Start()
         {
+            configureMiner();
             enhancedWalkSpeed = walkSpeed;
             gravityController = new Gravity_Controller(this.gameObject, new Vector3(0, 0.3f, 0), 0.5f);
             firstPersonCamera = this.gameObject.GetComponentInChildren<Camera_Controller>();
 
-            staminaCounterTextField.text = stamina.ToString();
+            staminaCounterTextField.text = currentStamina.ToString();
             collectedStonesCounterTextField.text = collectedStones.ToString();
+            healthCounterText.text = minerHealth.ToString();
         }
 
         // Update is called once per frame
@@ -55,12 +52,23 @@ namespace Assets.Scripts
             updateGUI();
 
         }
-        
+
+        private void configureMiner()
+        {
+            MinerConfigData minerConfigData = Main.getConfigData();
+
+            this.minerHealth = minerConfigData.getHealth();
+            this.walkSpeed = minerConfigData.getWalkSpeed();
+            this.maxStamina = minerConfigData.getMaxStamina();
+            this.currentStamina = maxStamina;
+            this.throwForce = minerConfigData.getThrowForce();
+        }
 
         private void updateGUI()
         {
-            this.staminaCounterTextField.text = stamina + " %";
+            this.staminaCounterTextField.text = currentStamina + " %";
             this.collectedStonesCounterTextField.text = collectedStones.ToString();
+            healthCounterText.text = minerHealth.ToString();
         }
 
 
@@ -85,9 +93,9 @@ namespace Assets.Scripts
         {
             if (Input.GetKey(KeyCode.LeftShift) && Input.GetKey(KeyCode.W))
             {
-                if (stamina > 0)
+                if (currentStamina > 0)
                 {
-                    stamina--;
+                    currentStamina--;
                     enhancedWalkSpeed = walkSpeed * 2;
                 }
                 else
@@ -98,9 +106,9 @@ namespace Assets.Scripts
             else
             {
                 enhancedWalkSpeed = walkSpeed;
-                if (stamina < maxStamina)
+                if (currentStamina < maxStamina)
                 {
-                    stamina++;
+                    currentStamina++;
                 }
             }
 

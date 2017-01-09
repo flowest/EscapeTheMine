@@ -9,6 +9,13 @@ namespace Assets.Scripts
     {
 
         public InputField player_name;
+        public Text killedBatsCounterText;
+
+        void Start()
+        {
+            killedBatsCounterText.text = "Killed Bats: " + Main.getKilledBats();
+        }
+
 
         public void enterToHighscore()
         {
@@ -20,7 +27,7 @@ namespace Assets.Scripts
             string url = "http://webuser.hs-furtwangen.de/~westphaf/EscapeTheMine/leaderboard.php";
             WWWForm form = new WWWForm();
             form.AddField("PlayerName", player_name.text);
-            form.AddField("PointsReached", 99);
+            form.AddField("PointsReached", Main.getKilledBats());
 
             WWW www = new WWW(url, form);
             yield return www;

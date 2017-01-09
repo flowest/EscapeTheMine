@@ -1,0 +1,8 @@
+<Settings>
+	<Miner>
+		<Health>5</Health>
+		<WalkSpeed>4</WalkSpeed>
+		<MaxStamina>100</MaxStamina>
+		<ThrowForce>700</ThrowForce>
+	</Miner>
+</Settings>

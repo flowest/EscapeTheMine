@@ -58,6 +58,7 @@ namespace Assets.Scripts
             batHealth--;
             if (batHealth <= 0)
             {
+                Main.killedBat();
                 Destroy(this.transform.gameObject);
             }
         }
