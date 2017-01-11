@@ -23,7 +23,9 @@ namespace Assets.Scripts
         private int enhancedWalkSpeed;
         private Gravity_Controller gravityController;
         private Camera_Controller firstPersonCamera;
-        
+        public AudioSource thrwoStoneAudioSource;
+        public AudioSource walkAudioSource;
+
         // Use this for initialization
         void Start()
         {
@@ -43,7 +45,7 @@ namespace Assets.Scripts
             gravityController.doPhysics();
             moveCharacter();
             moveCamera();
-            
+
             if (Input.GetMouseButtonDown(0))
             {
                 throwStone();
@@ -76,6 +78,7 @@ namespace Assets.Scripts
         {
             if (collectedStones > 0)
             {
+                thrwoStoneAudioSource.Play();
                 collectedStones--;
                 GameObject throwedStone = (GameObject)Instantiate(Resources.Load("Stone"), new Vector3(this.transform.localPosition.x, this.transform.position.y + 2.5f, this.transform.position.z), this.transform.rotation);
                 throwedStone.name = "Stone";
@@ -83,7 +86,7 @@ namespace Assets.Scripts
             }
         }
 
-        
+
         private void moveCamera()
         {
             firstPersonCamera.tiltCamera(this.rotationSensitivityY);
@@ -97,15 +100,18 @@ namespace Assets.Scripts
                 {
                     currentStamina--;
                     enhancedWalkSpeed = walkSpeed * 2;
+                    walkAudioSource.pitch = 2;
                 }
                 else
                 {
                     enhancedWalkSpeed = walkSpeed;
+                    walkAudioSource.pitch = 1;
                 }
             }
             else
             {
                 enhancedWalkSpeed = walkSpeed;
+                walkAudioSource.pitch = 1;
                 if (currentStamina < maxStamina)
                 {
                     currentStamina++;
@@ -122,6 +128,18 @@ namespace Assets.Scripts
             this.transform.Translate(Vector3.right * Input.GetAxis("Horizontal") * Time.deltaTime * walkSpeed, Space.Self);
 
             this.transform.Rotate(Vector3.up * Input.GetAxis("Mouse X") * Time.deltaTime * rotationSensitivityX, Space.World);
+
+            if (Input.GetAxis("Vertical") == 1 || Input.GetAxis("Horizontal") == 1 || Input.GetAxis("Vertical") == -1 || Input.GetAxis("Horizontal") == -1)
+            {
+                if (walkAudioSource.isPlaying == false)
+                {
+                    walkAudioSource.Play();
+                }
+            }
+            else
+            {
+                walkAudioSource.Stop();
+            }
         }
 
         public void pickUpRaycastHitted(RaycastHit raycastHit)

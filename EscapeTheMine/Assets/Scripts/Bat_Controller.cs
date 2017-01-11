@@ -12,11 +12,13 @@ namespace Assets.Scripts
 
         private RaycastHit raycastBatHit;
         private Charater_Controller minerCharacterController;
+        private AudioSource audioSource;
 
         // Use this for initialization
         void Start()
         {
             minerCharacterController = MinerHeadTransform.transform.GetComponentInParent<Charater_Controller>();
+            audioSource = GetComponent<AudioSource>();
         }
 
         // Update is called once per frame
@@ -34,7 +36,19 @@ namespace Assets.Scripts
                 if (raycastBatHit.transform.name == "Miner_Character")
                 {
                     this.transform.Translate(Vector3.forward * batSpeed * Time.deltaTime, Space.Self);
+                    if (audioSource.isPlaying == false)
+                    {
+                        audioSource.Play();
+                    }
                 }
+                else
+                {
+                    audioSource.Stop();
+                }
+            }
+            else
+            {
+                audioSource.Stop();
             }
         }
 
