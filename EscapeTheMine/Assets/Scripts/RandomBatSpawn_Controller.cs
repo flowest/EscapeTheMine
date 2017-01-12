@@ -8,7 +8,7 @@ namespace Assets.Scripts
         // Use this for initialization
         void Start()
         {
-            int randomPosition = (int)Random.Range(0, 3);
+            int randomPosition = (int)Random.Range(0, transform.childCount);
             Transform randomTransform = this.transform.GetChild(randomPosition).transform;
             GameObject randomSpawnedBat = (GameObject)Instantiate(Resources.Load("Bat"), randomTransform,false);
             randomSpawnedBat.GetComponent<Bat_Controller>().MinerHeadTransform = GameObject.Find("Character_Camera").transform;
